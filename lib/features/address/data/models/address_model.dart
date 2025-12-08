@@ -20,7 +20,9 @@ class AddressModel {
   /// Create AddressModel from JSON
   factory AddressModel.fromJson(Map<String, dynamic> json) {
     return AddressModel(
-      addressId: json['address_id'] as int,
+      addressId: json['address_id'] is int
+          ? json['address_id'] as int
+          : int.parse(json['address_id'].toString()),
       addressType: json['address_type'] as String,
       addressLine: json['address_line'] as String,
       latitude: json['latitude'] != null

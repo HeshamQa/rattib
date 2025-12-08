@@ -10,6 +10,18 @@
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app requires your location while using the app.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app requires access to your location even in background.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We use your location for map and tracking features.</string>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+	<key>GMSApiKey</key>
+	<string>AIzaSyAhiiBXfrVGvBr5FfbnbTC-uudVjPMWyhU</string>
+
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

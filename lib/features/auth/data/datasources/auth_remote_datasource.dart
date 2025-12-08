@@ -9,7 +9,7 @@ class AuthRemoteDataSource {
   final ApiClient _apiClient;
 
   AuthRemoteDataSource({ApiClient? apiClient})
-      : _apiClient = apiClient ?? ApiClient();
+    : _apiClient = apiClient ?? ApiClient();
 
   /// Register new user
   Future<ApiResponse<UserModel>> register({
@@ -19,11 +19,7 @@ class AuthRemoteDataSource {
   }) async {
     final response = await _apiClient.post<UserModel>(
       ApiConstants.registerEndpoint,
-      data: {
-        'name': name,
-        'email': email,
-        'password': password,
-      },
+      data: {'name': name, 'email': email, 'password': password},
       fromJson: (data) => UserModel.fromJson(data as Map<String, dynamic>),
     );
 
@@ -37,10 +33,7 @@ class AuthRemoteDataSource {
   }) async {
     final response = await _apiClient.post<UserModel>(
       ApiConstants.loginEndpoint,
-      data: {
-        'email': email,
-        'password': password,
-      },
+      data: {'email': email, 'password': password},
       fromJson: (data) => UserModel.fromJson(data as Map<String, dynamic>),
     );
 
@@ -49,9 +42,7 @@ class AuthRemoteDataSource {
 
   /// Logout user
   Future<ApiResponse<void>> logout() async {
-    final response = await _apiClient.post<void>(
-      ApiConstants.logoutEndpoint,
-    );
+    final response = await _apiClient.post<void>(ApiConstants.logoutEndpoint);
 
     return response;
   }
@@ -60,9 +51,7 @@ class AuthRemoteDataSource {
   Future<ApiResponse<void>> forgotPassword({required String email}) async {
     final response = await _apiClient.post<void>(
       ApiConstants.forgotPasswordEndpoint,
-      data: {
-        'email': email,
-      },
+      data: {'email': email},
     );
 
     return response;

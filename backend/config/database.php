@@ -1,13 +1,6 @@
 <?php
-/**
- * Database Configuration File
- * Rattib Mashawerak API
- *
- * This file contains database connection settings
- */
 
 class Database {
-    // Database credentials
     private $host = "localhost";
     private $db_name = "softvysc_rattib";
     private $username = "softvysc_rattib_user"; // Update with your database username

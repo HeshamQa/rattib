@@ -82,6 +82,8 @@ class TaskProvider with ChangeNotifier {
       fromJson: (data) => TaskModel.fromJson(data as Map<String, dynamic>),
     );
 
+    print(response.message);
+
     _isLoading = false;
 
     if (response.success) {
@@ -145,10 +147,7 @@ class TaskProvider with ChangeNotifier {
 
     final response = await _apiClient.delete(
       ApiConstants.tasksDeleteEndpoint,
-      queryParameters: {
-        'id': taskId.toString(),
-        'user_id': userId.toString(),
-      },
+      queryParameters: {'id': taskId.toString(), 'user_id': userId.toString()},
     );
 
     _isLoading = false;

@@ -26,7 +26,9 @@ class TaskModel {
   /// Create TaskModel from JSON
   factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
-      taskId: json['task_id'] as int,
+      taskId: json['task_id'] is int
+          ? json['task_id'] as int
+          : int.parse(json['task_id'].toString()),
       title: json['title'] as String,
       description: json['description'] as String?,
       dueDate: json['due_date'] as String?,

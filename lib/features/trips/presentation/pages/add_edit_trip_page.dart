@@ -182,7 +182,7 @@ class _AddEditTripPageState extends State<AddEditTripPage> {
                 const SizedBox(height: 16),
                 // Status Dropdown
                 DropdownButtonFormField<String>(
-                  value: _selectedStatus,
+                  initialValue: _selectedStatus,
                   decoration: InputDecoration(
                     labelText: AppStrings.status,
                     prefixIcon: const Icon(Icons.info_outline),

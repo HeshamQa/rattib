@@ -12,7 +12,7 @@ class UserModel extends UserEntity {
   /// Create UserModel from JSON
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      userId: json['user_id'] as int,
+      userId: int.parse(json['user_id']),
       name: json['name'] as String,
       email: json['email'] as String,
     );
@@ -20,19 +20,11 @@ class UserModel extends UserEntity {
 
   /// Convert UserModel to JSON
   Map<String, dynamic> toJson() {
-    return {
-      'user_id': userId,
-      'name': name,
-      'email': email,
-    };
+    return {'user_id': userId, 'name': name, 'email': email};
   }
 
   /// Convert to entity
   UserEntity toEntity() {
-    return UserEntity(
-      userId: userId,
-      name: name,
-      email: email,
-    );
+    return UserEntity(userId: userId, name: name, email: email);
   }
 }

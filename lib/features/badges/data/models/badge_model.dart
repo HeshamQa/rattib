@@ -20,7 +20,9 @@ class BadgeModel {
   /// Create BadgeModel from JSON
   factory BadgeModel.fromJson(Map<String, dynamic> json) {
     return BadgeModel(
-      badgeId: json['badge_id'] as int,
+      badgeId: json['badge_id'] is int
+          ? json['badge_id'] as int
+          : int.parse(json['badge_id'].toString()),
       badgeName: json['badge_name'] as String,
       description: json['description'] as String,
       iconUrl: json['icon_url'] as String?,

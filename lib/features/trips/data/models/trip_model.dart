@@ -20,7 +20,9 @@ class TripModel {
   /// Create TripModel from JSON
   factory TripModel.fromJson(Map<String, dynamic> json) {
     return TripModel(
-      tripId: json['trip_id'] as int,
+      tripId: json['trip_id'] is int
+          ? json['trip_id'] as int
+          : int.parse(json['trip_id'].toString()),
       destination: json['destination'] as String,
       startDate: json['start_date'] as String,
       endDate: json['end_date'] as String?,
