@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rattib/core/constants/app_colors.dart';
 import 'package:rattib/core/constants/app_strings.dart';
 import 'package:rattib/core/widgets/custom_button.dart';
 import 'package:rattib/core/widgets/custom_text_field.dart';
+import 'package:rattib/core/widgets/location_picker_widget.dart';
 import 'package:rattib/core/utils/validators.dart';
 import 'package:rattib/core/utils/helpers.dart';
 import 'package:rattib/features/auth/presentation/providers/auth_provider.dart';
@@ -31,6 +33,9 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
   final _locationController = TextEditingController();
   final _dueDateController = TextEditingController();
 
+  double? _latitude;
+  double? _longitude;
+
   bool get isEditMode => widget.task != null;
 
   @override
@@ -41,6 +46,8 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
       _descriptionController.text = widget.task!.description ?? '';
       _locationController.text = widget.task!.location ?? '';
       _dueDateController.text = widget.task!.dueDate ?? '';
+      _latitude = widget.task!.latitude;
+      _longitude = widget.task!.longitude;
     }
   }
 
@@ -68,6 +75,30 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
     }
   }
 
+  Future<void> _selectLocation() async {
+    final result = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationPickerWidget(
+          initialLocation: _latitude != null && _longitude != null
+              ? LatLng(_latitude!, _longitude!)
+              : null,
+          initialAddress: _locationController.text.isNotEmpty
+              ? _locationController.text
+              : null,
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        _locationController.text = result['location'] as String;
+        _latitude = result['latitude'] as double;
+        _longitude = result['longitude'] as double;
+      });
+    }
+  }
+
   Future<void> _saveTask() async {
     if (_formKey.currentState!.validate()) {
       Helpers.dismissKeyboard(context);
@@ -89,6 +120,8 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
           location: _locationController.text.trim().isNotEmpty
               ? _locationController.text.trim()
               : null,
+          latitude: _latitude,
+          longitude: _longitude,
           status: widget.task!.status,
         );
       } else {
@@ -102,6 +135,8 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
           location: _locationController.text.trim().isNotEmpty
               ? _locationController.text.trim()
               : null,
+          latitude: _latitude,
+          longitude: _longitude,
         );
       }
 
@@ -170,8 +205,22 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                 CustomTextField(
                   controller: _locationController,
                   labelText: AppStrings.location,
-                  hintText: 'Enter location',
+                  hintText: 'Select location from map',
                   prefixIcon: const Icon(Icons.location_on),
+                  readOnly: true,
+                  onTap: _selectLocation,
+                  suffixIcon: _locationController.text.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            setState(() {
+                              _locationController.clear();
+                              _latitude = null;
+                              _longitude = null;
+                            });
+                          },
+                        )
+                      : null,
                 ),
                 const SizedBox(height: 32),
                 // Save Button
