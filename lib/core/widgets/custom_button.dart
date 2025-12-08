@@ -5,7 +5,7 @@ import 'package:rattib/core/constants/app_colors.dart';
 /// Reusable button component matching app design
 class CustomButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool isLoading;
   final bool isOutlined;
   final Color? color;
@@ -37,7 +37,7 @@ class CustomButton extends StatelessWidget {
         width: width ?? double.infinity,
         height: height,
         child: OutlinedButton(
-          onPressed: isLoading ? null : onPressed,
+          onPressed: (isLoading || onPressed == null) ? null : onPressed,
           style: OutlinedButton.styleFrom(
             side: BorderSide(color: buttonColor, width: 2),
             shape: RoundedRectangleBorder(
@@ -69,7 +69,7 @@ class CustomButton extends StatelessWidget {
       width: width ?? double.infinity,
       height: height,
       child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
+        onPressed: (isLoading || onPressed == null) ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: buttonColor,
           disabledBackgroundColor: AppColors.disabledButton,

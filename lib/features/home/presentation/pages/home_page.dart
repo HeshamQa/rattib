@@ -47,18 +47,16 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           AppStrings.appName,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              // TODO: Implement notifications
-            },
+            onPressed: () {},
           ),
           IconButton(
             icon: const Icon(Icons.settings_outlined),
@@ -87,7 +85,10 @@ class _HomePageState extends State<HomePage> {
             TextField(
               decoration: InputDecoration(
                 hintText: AppStrings.searchHere,
-                prefixIcon: const Icon(Icons.search, color: AppColors.iconColor),
+                prefixIcon: const Icon(
+                  Icons.search,
+                  color: AppColors.iconColor,
+                ),
                 filled: true,
                 fillColor: AppColors.white,
                 border: OutlineInputBorder(
