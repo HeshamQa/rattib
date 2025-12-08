@@ -13,6 +13,7 @@ class ApiConstants {
   static const String registerEndpoint = '/api/auth/register.php';
   static const String logoutEndpoint = '/api/auth/logout.php';
   static const String forgotPasswordEndpoint = '/api/auth/forgot_password.php';
+  static const String updateProfileEndpoint = '/api/auth/update_profile.php';
 
   // Tasks Endpoints
   static const String tasksReadEndpoint = '/api/tasks/read.php';

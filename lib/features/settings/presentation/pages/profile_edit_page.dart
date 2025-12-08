@@ -42,7 +42,36 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   Future<void> _saveProfile() async {
     if (_formKey.currentState!.validate()) {
       Helpers.dismissKeyboard(context);
-      Helpers.showSuccess(context, 'Profile update feature coming soon!');
+
+      final authProvider = context.read<AuthProvider>();
+
+      // Show loading indicator
+      Helpers.showLoadingDialog(context);
+
+      final success = await authProvider.updateProfile(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+      );
+
+      // Hide loading indicator
+      if (mounted) {
+        Helpers.hideLoadingDialog(context);
+      }
+
+      if (success) {
+        if (mounted) {
+          Helpers.showSuccess(context, 'Profile updated successfully!');
+          // Go back to settings page
+          Navigator.of(context).pop();
+        }
+      } else {
+        if (mounted) {
+          Helpers.showError(
+            context,
+            authProvider.errorMessage ?? 'Failed to update profile. Please try again.',
+          );
+        }
+      }
     }
   }
 

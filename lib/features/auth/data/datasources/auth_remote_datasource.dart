@@ -56,4 +56,19 @@ class AuthRemoteDataSource {
 
     return response;
   }
+
+  /// Update user profile
+  Future<ApiResponse<UserModel>> updateProfile({
+    required int userId,
+    required String name,
+    required String email,
+  }) async {
+    final response = await _apiClient.post<UserModel>(
+      ApiConstants.updateProfileEndpoint,
+      data: {'user_id': userId, 'name': name, 'email': email},
+      fromJson: (data) => UserModel.fromJson(data as Map<String, dynamic>),
+    );
+
+    return response;
+  }
 }

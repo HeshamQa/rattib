@@ -18,4 +18,10 @@ abstract class AuthRepository {
   Future<ApiResponse<void>> logout();
 
   Future<ApiResponse<void>> forgotPassword({required String email});
+
+  Future<ApiResponse<UserEntity>> updateProfile({
+    required int userId,
+    required String name,
+    required String email,
+  });
 }

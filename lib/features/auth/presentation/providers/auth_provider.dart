@@ -4,6 +4,7 @@ import 'package:rattib/features/auth/domain/entities/user_entity.dart';
 import 'package:rattib/features/auth/domain/usecases/login_usecase.dart';
 import 'package:rattib/features/auth/domain/usecases/signup_usecase.dart';
 import 'package:rattib/features/auth/domain/usecases/logout_usecase.dart';
+import 'package:rattib/features/auth/domain/usecases/update_profile_usecase.dart';
 import 'package:rattib/features/auth/data/repositories/auth_repository_impl.dart';
 
 /// Authentication Provider
@@ -13,6 +14,7 @@ class AuthProvider with ChangeNotifier {
   late final LoginUseCase _loginUseCase;
   late final SignupUseCase _signupUseCase;
   late final LogoutUseCase _logoutUseCase;
+  late final UpdateProfileUseCase _updateProfileUseCase;
 
   // State
   UserEntity? _currentUser;
@@ -30,6 +32,7 @@ class AuthProvider with ChangeNotifier {
     _loginUseCase = LoginUseCase(repository);
     _signupUseCase = SignupUseCase(repository);
     _logoutUseCase = LogoutUseCase(repository);
+    _updateProfileUseCase = UpdateProfileUseCase(repository);
     _loadUserFromStorage();
   }
 
@@ -135,6 +138,41 @@ class AuthProvider with ChangeNotifier {
     _currentUser = null;
     _errorMessage = null;
     notifyListeners();
+  }
+
+  /// Update profile
+  Future<bool> updateProfile({
+    required String name,
+    required String email,
+  }) async {
+    if (_currentUser == null) {
+      _errorMessage = 'User not logged in';
+      notifyListeners();
+      return false;
+    }
+
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    final response = await _updateProfileUseCase(
+      userId: _currentUser!.userId,
+      name: name,
+      email: email,
+    );
+
+    _isLoading = false;
+
+    if (response.success && response.data != null) {
+      _currentUser = response.data;
+      await _saveUserToStorage(_currentUser!);
+      notifyListeners();
+      return true;
+    } else {
+      _errorMessage = response.message;
+      notifyListeners();
+      return false;
+    }
   }
 
   /// Clear error

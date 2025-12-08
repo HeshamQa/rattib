@@ -62,4 +62,26 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<ApiResponse<void>> forgotPassword({required String email}) async {
     return await _remoteDataSource.forgotPassword(email: email);
   }
+
+  @override
+  Future<ApiResponse<UserEntity>> updateProfile({
+    required int userId,
+    required String name,
+    required String email,
+  }) async {
+    final response = await _remoteDataSource.updateProfile(
+      userId: userId,
+      name: name,
+      email: email,
+    );
+
+    if (response.success && response.data != null) {
+      return ApiResponse.success(
+        data: response.data!.toEntity(),
+        message: response.message,
+      );
+    }
+
+    return ApiResponse.error(message: response.message ?? 'Profile update failed');
+  }
 }
