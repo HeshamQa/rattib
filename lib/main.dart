@@ -4,6 +4,10 @@ import 'package:rattib/core/constants/app_colors.dart';
 import 'package:rattib/core/constants/app_strings.dart';
 import 'package:rattib/core/routes/app_routes.dart';
 import 'package:rattib/features/auth/presentation/providers/auth_provider.dart';
+import 'package:rattib/features/address/presentation/providers/address_provider.dart';
+import 'package:rattib/features/tasks/presentation/providers/task_provider.dart';
+import 'package:rattib/features/trips/presentation/providers/trip_provider.dart';
+import 'package:rattib/features/badges/presentation/providers/badge_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +21,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => AddressProvider()),
+        ChangeNotifierProvider(create: (_) => TaskProvider()),
+        ChangeNotifierProvider(create: (_) => TripProvider()),
+        ChangeNotifierProvider(create: (_) => BadgeProvider()),
         // Add more providers here as features are implemented
       ],
       child: MaterialApp(

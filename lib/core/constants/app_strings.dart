@@ -41,8 +41,12 @@ class AppStrings {
   static const String deleteTask = 'Delete Task';
   static const String taskTitle = 'Task Title';
   static const String taskDescription = 'Description';
+  static const String description = 'Description';
   static const String dueDate = 'Due Date';
   static const String status = 'Status';
+  static const String location = 'Location';
+  static const String noTasksYet = 'No tasks yet';
+  static const String addYourFirstTask = 'Add your first task';
 
   // Trips
   static const String trips = 'Trips';
