@@ -46,6 +46,7 @@ class _SignInPageState extends State<SignInPage> {
       if (success) {
         Helpers.showSuccess(context, AppStrings.loginSuccess);
         Navigator.pushReplacementNamed(context, AppRoutes.home);
+        
       } else {
         Helpers.showError(
           context,
