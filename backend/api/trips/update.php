@@ -26,14 +26,23 @@ if (
     !empty($data->trip_id) &&
     !empty($data->user_id) &&
     !empty($data->destination) &&
-    !empty($data->start_date)
+    isset($data->destination_latitude) &&
+    isset($data->destination_longitude) &&
+    !empty($data->pickup_location) &&
+    isset($data->pickup_latitude) &&
+    isset($data->pickup_longitude) &&
+    !empty($data->trip_date)
 ) {
     // Set trip properties
     $trip->TripID = $data->trip_id;
     $trip->UserID = $data->user_id;
     $trip->Destination = $data->destination;
-    $trip->StartDate = $data->start_date;
-    $trip->EndDate = isset($data->end_date) ? $data->end_date : null;
+    $trip->DestinationLatitude = $data->destination_latitude;
+    $trip->DestinationLongitude = $data->destination_longitude;
+    $trip->PickupLocation = $data->pickup_location;
+    $trip->PickupLatitude = $data->pickup_latitude;
+    $trip->PickupLongitude = $data->pickup_longitude;
+    $trip->TripDate = $data->trip_date;
     $trip->Status = $data->status;
 
     // Update trip

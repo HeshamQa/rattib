@@ -8,14 +8,11 @@ import 'package:rattib/features/trips/data/models/trip_model.dart';
 import 'package:rattib/features/trips/presentation/providers/trip_provider.dart';
 
 /// Trip Card Widget
-/// Displays trip information
+/// Displays trip information with pickup and destination
 class TripCard extends StatelessWidget {
   final TripModel trip;
 
-  const TripCard({
-    super.key,
-    required this.trip,
-  });
+  const TripCard({super.key, required this.trip});
 
   void _deleteTrip(BuildContext context) async {
     final confirmed = await Helpers.showConfirmDialog(
@@ -57,11 +54,7 @@ class TripCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(
-          context,
-          AppRoutes.editTrip,
-          arguments: trip,
-        );
+        Navigator.pushNamed(context, AppRoutes.editTrip, arguments: trip);
       },
       borderRadius: BorderRadius.circular(12),
       child: Container(
@@ -69,9 +62,7 @@ class TripCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.white,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: AppColors.borderColor,
-          ),
+          border: Border.all(color: AppColors.borderColor),
         ),
         child: Row(
           children: [
@@ -82,11 +73,7 @@ class TripCard extends StatelessWidget {
                 color: AppColors.primaryBlue.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(
-                Icons.flight_takeoff,
-                color: AppColors.primaryBlue,
-                size: 24,
-              ),
+              child: Icon(Icons.route, color: AppColors.primaryBlue, size: 24),
             ),
             const SizedBox(width: 16),
             // Trip details
@@ -104,8 +91,11 @@ class TripCard extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                             color: AppColors.darkText,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -127,6 +117,30 @@ class TripCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
+                  // Pickup location
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.my_location,
+                        size: 14,
+                        color: AppColors.iconColor,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          trip.pickupLocation ?? 'No pickup location',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppColors.grayText,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  // Trip date
                   Row(
                     children: [
                       const Icon(
@@ -136,25 +150,30 @@ class TripCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        trip.startDate,
+                        trip.tripDate ?? 'No date set',
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.grayText,
                         ),
                       ),
-                      if (trip.endDate != null) ...[
-                        const Text(
-                          ' - ',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.grayText,
+                      if (trip.order != null) ...[
+                        const SizedBox(width: 12),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
                           ),
-                        ),
-                        Text(
-                          trip.endDate!,
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: AppColors.grayText,
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryBlue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            'Order: ${trip.order}',
+                            style: const TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primaryBlue,
+                            ),
                           ),
                         ),
                       ],

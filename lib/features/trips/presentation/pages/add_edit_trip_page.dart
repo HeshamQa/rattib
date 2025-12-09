@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:rattib/core/constants/app_colors.dart';
 import 'package:rattib/core/constants/app_strings.dart';
 import 'package:rattib/core/widgets/custom_button.dart';
 import 'package:rattib/core/widgets/custom_text_field.dart';
+import 'package:rattib/core/widgets/location_picker_widget.dart';
 import 'package:rattib/core/utils/validators.dart';
 import 'package:rattib/core/utils/helpers.dart';
 import 'package:rattib/features/auth/presentation/providers/auth_provider.dart';
@@ -11,14 +13,11 @@ import 'package:rattib/features/trips/data/models/trip_model.dart';
 import 'package:rattib/features/trips/presentation/providers/trip_provider.dart';
 
 /// Add/Edit Trip Page
-/// Create or update a trip
+/// Create or update a trip with location selection
 class AddEditTripPage extends StatefulWidget {
   final TripModel? trip;
 
-  const AddEditTripPage({
-    super.key,
-    this.trip,
-  });
+  const AddEditTripPage({super.key, this.trip});
 
   @override
   State<AddEditTripPage> createState() => _AddEditTripPageState();
@@ -27,8 +26,14 @@ class AddEditTripPage extends StatefulWidget {
 class _AddEditTripPageState extends State<AddEditTripPage> {
   final _formKey = GlobalKey<FormState>();
   final _destinationController = TextEditingController();
-  final _startDateController = TextEditingController();
-  final _endDateController = TextEditingController();
+  final _pickupLocationController = TextEditingController();
+  final _tripDateController = TextEditingController();
+
+  // Location data
+  double? _pickupLatitude;
+  double? _pickupLongitude;
+  double? _destinationLatitude;
+  double? _destinationLongitude;
 
   String _selectedStatus = 'Planned';
   final List<String> _statusOptions = ['Planned', 'Completed', 'Cancelled'];
@@ -40,21 +45,25 @@ class _AddEditTripPageState extends State<AddEditTripPage> {
     super.initState();
     if (isEditMode) {
       _destinationController.text = widget.trip!.destination;
-      _startDateController.text = widget.trip!.startDate;
-      _endDateController.text = widget.trip!.endDate ?? '';
+      _pickupLocationController.text = widget.trip!.pickupLocation ?? '';
+      _tripDateController.text = widget.trip!.tripDate ?? '';
       _selectedStatus = widget.trip!.status;
+      _pickupLatitude = widget.trip!.pickupLatitude;
+      _pickupLongitude = widget.trip!.pickupLongitude;
+      _destinationLatitude = widget.trip!.destinationLatitude;
+      _destinationLongitude = widget.trip!.destinationLongitude;
     }
   }
 
   @override
   void dispose() {
     _destinationController.dispose();
-    _startDateController.dispose();
-    _endDateController.dispose();
+    _pickupLocationController.dispose();
+    _tripDateController.dispose();
     super.dispose();
   }
 
-  Future<void> _selectStartDate() async {
+  Future<void> _selectTripDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -64,28 +73,73 @@ class _AddEditTripPageState extends State<AddEditTripPage> {
 
     if (picked != null) {
       setState(() {
-        _startDateController.text = Helpers.formatDate(picked);
+        _tripDateController.text = Helpers.formatDate(picked);
       });
     }
   }
 
-  Future<void> _selectEndDate() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
+  Future<void> _selectPickupLocation() async {
+    final result = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationPickerWidget(
+          initialLocation: _pickupLatitude != null && _pickupLongitude != null
+              ? LatLng(_pickupLatitude!, _pickupLongitude!)
+              : null,
+          initialAddress: _pickupLocationController.text.isNotEmpty
+              ? _pickupLocationController.text
+              : null,
+        ),
+      ),
     );
 
-    if (picked != null) {
+    if (result != null) {
       setState(() {
-        _endDateController.text = Helpers.formatDate(picked);
+        _pickupLocationController.text = result['location'] as String;
+        _pickupLatitude = result['latitude'] as double;
+        _pickupLongitude = result['longitude'] as double;
+      });
+    }
+  }
+
+  Future<void> _selectDestinationLocation() async {
+    final result = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => LocationPickerWidget(
+          initialLocation:
+              _destinationLatitude != null && _destinationLongitude != null
+              ? LatLng(_destinationLatitude!, _destinationLongitude!)
+              : null,
+          initialAddress: _destinationController.text.isNotEmpty
+              ? _destinationController.text
+              : null,
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        _destinationController.text = result['location'] as String;
+        _destinationLatitude = result['latitude'] as double;
+        _destinationLongitude = result['longitude'] as double;
       });
     }
   }
 
   Future<void> _saveTrip() async {
     if (_formKey.currentState!.validate()) {
+      // Validate location selections
+      if (_pickupLatitude == null || _pickupLongitude == null) {
+        Helpers.showError(context, 'Please select a pickup location');
+        return;
+      }
+
+      if (_destinationLatitude == null || _destinationLongitude == null) {
+        Helpers.showError(context, 'Please select a destination location');
+        return;
+      }
+
       Helpers.dismissKeyboard(context);
 
       final authProvider = context.read<AuthProvider>();
@@ -98,20 +152,24 @@ class _AddEditTripPageState extends State<AddEditTripPage> {
           tripId: widget.trip!.tripId,
           userId: authProvider.currentUser!.userId,
           destination: _destinationController.text.trim(),
-          startDate: _startDateController.text.trim(),
-          endDate: _endDateController.text.trim().isNotEmpty
-              ? _endDateController.text.trim()
-              : null,
+          destinationLatitude: _destinationLatitude!,
+          destinationLongitude: _destinationLongitude!,
+          pickupLocation: _pickupLocationController.text.trim(),
+          pickupLatitude: _pickupLatitude!,
+          pickupLongitude: _pickupLongitude!,
+          tripDate: _tripDateController.text.trim(),
           status: _selectedStatus,
         );
       } else {
         success = await tripProvider.createTrip(
           userId: authProvider.currentUser!.userId,
           destination: _destinationController.text.trim(),
-          startDate: _startDateController.text.trim(),
-          endDate: _endDateController.text.trim().isNotEmpty
-              ? _endDateController.text.trim()
-              : null,
+          destinationLatitude: _destinationLatitude!,
+          destinationLongitude: _destinationLongitude!,
+          pickupLocation: _pickupLocationController.text.trim(),
+          pickupLatitude: _pickupLatitude!,
+          pickupLongitude: _pickupLongitude!,
+          tripDate: _tripDateController.text.trim(),
           status: _selectedStatus,
         );
       }
@@ -121,7 +179,9 @@ class _AddEditTripPageState extends State<AddEditTripPage> {
       if (success) {
         Helpers.showSuccess(
           context,
-          isEditMode ? 'Trip updated successfully' : 'Trip created successfully',
+          isEditMode
+              ? 'Trip updated successfully'
+              : 'Trip created successfully',
         );
         Navigator.pop(context);
       } else {
@@ -148,51 +208,65 @@ class _AddEditTripPageState extends State<AddEditTripPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Pickup Location Field
+                CustomTextField(
+                  controller: _pickupLocationController,
+                  labelText: 'Pickup Location',
+                  hintText: 'Select pickup location from map',
+                  prefixIcon: const Icon(Icons.my_location),
+                  readOnly: true,
+                  onTap: _selectPickupLocation,
+                  validator: (value) => Validators.validateRequired(
+                    value,
+                    fieldName: 'Pickup location',
+                  ),
+                ),
+                const SizedBox(height: 16),
                 // Destination Field
                 CustomTextField(
                   controller: _destinationController,
                   labelText: AppStrings.destination,
-                  hintText: 'Enter destination',
-                  prefixIcon: const Icon(Icons.location_city),
-                  validator: (value) =>
-                      Validators.validateRequired(value, fieldName: 'Destination'),
+                  hintText: 'Select destination from map',
+                  prefixIcon: const Icon(Icons.location_on),
+                  readOnly: true,
+                  onTap: _selectDestinationLocation,
+                  validator: (value) => Validators.validateRequired(
+                    value,
+                    fieldName: 'Destination',
+                  ),
                 ),
                 const SizedBox(height: 16),
-                // Start Date Field
+                // Trip Date Field
                 CustomTextField(
-                  controller: _startDateController,
-                  labelText: AppStrings.startDate,
-                  hintText: 'Select start date',
+                  controller: _tripDateController,
+                  labelText: 'Trip Date',
+                  hintText: 'Select trip date',
                   prefixIcon: const Icon(Icons.calendar_today),
                   readOnly: true,
-                  onTap: _selectStartDate,
-                  validator: (value) =>
-                      Validators.validateRequired(value, fieldName: 'Start date'),
-                ),
-                const SizedBox(height: 16),
-                // End Date Field
-                CustomTextField(
-                  controller: _endDateController,
-                  labelText: AppStrings.endDate,
-                  hintText: 'Select end date (optional)',
-                  prefixIcon: const Icon(Icons.calendar_today_outlined),
-                  readOnly: true,
-                  onTap: _selectEndDate,
+                  onTap: _selectTripDate,
+                  validator: (value) => Validators.validateRequired(
+                    value,
+                    fieldName: 'Trip date',
+                  ),
                 ),
                 const SizedBox(height: 16),
                 // Status Dropdown
                 DropdownButtonFormField<String>(
-                  initialValue: _selectedStatus,
+                  value: _selectedStatus,
                   decoration: InputDecoration(
                     labelText: AppStrings.status,
                     prefixIcon: const Icon(Icons.info_outline),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.borderColor),
+                      borderSide: const BorderSide(
+                        color: AppColors.borderColor,
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: AppColors.borderColor),
+                      borderSide: const BorderSide(
+                        color: AppColors.borderColor,
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),

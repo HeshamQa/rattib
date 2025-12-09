@@ -25,13 +25,22 @@ $data = json_decode(file_get_contents("php://input"));
 if (
     !empty($data->user_id) &&
     !empty($data->destination) &&
-    !empty($data->start_date)
+    isset($data->destination_latitude) &&
+    isset($data->destination_longitude) &&
+    !empty($data->pickup_location) &&
+    isset($data->pickup_latitude) &&
+    isset($data->pickup_longitude) &&
+    !empty($data->trip_date)
 ) {
     // Set trip properties
     $trip->UserID = $data->user_id;
     $trip->Destination = $data->destination;
-    $trip->StartDate = $data->start_date;
-    $trip->EndDate = isset($data->end_date) ? $data->end_date : null;
+    $trip->DestinationLatitude = $data->destination_latitude;
+    $trip->DestinationLongitude = $data->destination_longitude;
+    $trip->PickupLocation = $data->pickup_location;
+    $trip->PickupLatitude = $data->pickup_latitude;
+    $trip->PickupLongitude = $data->pickup_longitude;
+    $trip->TripDate = $data->trip_date;
     $trip->Status = isset($data->status) ? $data->status : 'Planned';
 
     // Create trip
@@ -43,8 +52,12 @@ if (
             "data" => [
                 "trip_id" => $trip->TripID,
                 "destination" => $trip->Destination,
-                "start_date" => $trip->StartDate,
-                "end_date" => $trip->EndDate,
+                "destination_latitude" => $trip->DestinationLatitude,
+                "destination_longitude" => $trip->DestinationLongitude,
+                "pickup_location" => $trip->PickupLocation,
+                "pickup_latitude" => $trip->PickupLatitude,
+                "pickup_longitude" => $trip->PickupLongitude,
+                "trip_date" => $trip->TripDate,
                 "status" => $trip->Status
             ]
         ]);
@@ -59,7 +72,7 @@ if (
     http_response_code(400);
     echo json_encode([
         "success" => false,
-        "message" => "Unable to create trip. Destination and start date are required."
+        "message" => "Unable to create trip. All location fields and trip date are required."
     ]);
 }
 ?>

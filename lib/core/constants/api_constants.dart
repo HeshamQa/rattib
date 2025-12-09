@@ -26,6 +26,8 @@ class ApiConstants {
   static const String tripsCreateEndpoint = '/api/trips/create.php';
   static const String tripsUpdateEndpoint = '/api/trips/update.php';
   static const String tripsDeleteEndpoint = '/api/trips/delete.php';
+  static const String tripsOptimizeRouteEndpoint =
+      '/api/trips/optimize_route.php';
 
   // Addresses Endpoints
   static const String addressesReadEndpoint = '/api/addresses/read.php';

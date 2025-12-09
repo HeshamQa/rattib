@@ -35,8 +35,12 @@ if ($user_id) {
             $trip_item = array(
                 "trip_id" => $TripID,
                 "destination" => $Destination,
-                "start_date" => $StartDate,
-                "end_date" => $EndDate,
+                "destination_latitude" => $DestinationLatitude,
+                "destination_longitude" => $DestinationLongitude,
+                "pickup_location" => $PickupLocation,
+                "pickup_latitude" => $PickupLatitude,
+                "pickup_longitude" => $PickupLongitude,
+                "trip_date" => $TripDate,
                 "status" => $Status,
                 "created_at" => $CreatedAt
             );

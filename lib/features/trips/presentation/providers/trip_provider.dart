@@ -40,6 +40,8 @@ class TripProvider with ChangeNotifier {
       },
     );
 
+    print(response.message);
+
     _isLoading = false;
 
     if (response.success && response.data != null) {
@@ -56,8 +58,12 @@ class TripProvider with ChangeNotifier {
   Future<bool> createTrip({
     required int userId,
     required String destination,
-    required String startDate,
-    String? endDate,
+    required double destinationLatitude,
+    required double destinationLongitude,
+    required String pickupLocation,
+    required double pickupLatitude,
+    required double pickupLongitude,
+    required String tripDate,
     String status = 'Planned',
   }) async {
     _isLoading = true;
@@ -69,12 +75,18 @@ class TripProvider with ChangeNotifier {
       data: {
         'user_id': userId,
         'destination': destination,
-        'start_date': startDate,
-        'end_date': endDate,
+        'destination_latitude': destinationLatitude,
+        'destination_longitude': destinationLongitude,
+        'pickup_location': pickupLocation,
+        'pickup_latitude': pickupLatitude,
+        'pickup_longitude': pickupLongitude,
+        'trip_date': tripDate,
         'status': status,
       },
       fromJson: (data) => TripModel.fromJson(data as Map<String, dynamic>),
     );
+
+    print(response.message);
 
     _isLoading = false;
 
@@ -93,8 +105,12 @@ class TripProvider with ChangeNotifier {
     required int tripId,
     required int userId,
     required String destination,
-    required String startDate,
-    String? endDate,
+    required double destinationLatitude,
+    required double destinationLongitude,
+    required String pickupLocation,
+    required double pickupLatitude,
+    required double pickupLongitude,
+    required String tripDate,
     required String status,
   }) async {
     _isLoading = true;
@@ -107,8 +123,12 @@ class TripProvider with ChangeNotifier {
         'trip_id': tripId,
         'user_id': userId,
         'destination': destination,
-        'start_date': startDate,
-        'end_date': endDate,
+        'destination_latitude': destinationLatitude,
+        'destination_longitude': destinationLongitude,
+        'pickup_location': pickupLocation,
+        'pickup_latitude': pickupLatitude,
+        'pickup_longitude': pickupLongitude,
+        'trip_date': tripDate,
         'status': status,
       },
     );
@@ -133,10 +153,7 @@ class TripProvider with ChangeNotifier {
 
     final response = await _apiClient.delete(
       ApiConstants.tripsDeleteEndpoint,
-      queryParameters: {
-        'id': tripId.toString(),
-        'user_id': userId.toString(),
-      },
+      queryParameters: {'id': tripId.toString(), 'user_id': userId.toString()},
     );
 
     _isLoading = false;
@@ -154,5 +171,36 @@ class TripProvider with ChangeNotifier {
   void clearError() {
     _errorMessage = null;
     notifyListeners();
+  }
+
+  /// Optimize trip route
+  Future<List<TripModel>> optimizeRoute(int userId) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    final response = await _apiClient.post<List<TripModel>>(
+      ApiConstants.tripsOptimizeRouteEndpoint,
+      data: {'user_id': userId},
+      fromJson: (data) {
+        if (data is List) {
+          return data
+              .map((item) => TripModel.fromJson(item as Map<String, dynamic>))
+              .toList();
+        }
+        return <TripModel>[];
+      },
+    );
+
+    _isLoading = false;
+
+    if (response.success && response.data != null) {
+      notifyListeners();
+      return response.data!;
+    } else {
+      _errorMessage = response.message;
+      notifyListeners();
+      return [];
+    }
   }
 }
