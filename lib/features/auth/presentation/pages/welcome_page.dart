@@ -41,13 +41,15 @@ class _WelcomePageState extends State<WelcomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Spacer(flex: 1),
-              SizedBox(
-                width: double.infinity,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [Image.asset("assets/images/head.png")],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assets/images/head.png",
+                    width: 350,
+                    fit: BoxFit.contain,
+                  ),
+                ],
               ),
               const Spacer(flex: 2),
               // App Name

@@ -6,6 +6,7 @@ import 'package:rattib/core/constants/app_strings.dart';
 import 'package:rattib/core/widgets/custom_button.dart';
 import 'package:rattib/core/widgets/custom_text_field.dart';
 import 'package:rattib/core/widgets/location_picker_widget.dart';
+import 'package:rattib/core/widgets/trip_route_map_widget.dart';
 import 'package:rattib/core/utils/validators.dart';
 import 'package:rattib/core/utils/helpers.dart';
 import 'package:rattib/features/auth/presentation/providers/auth_provider.dart';
@@ -39,6 +40,20 @@ class _AddEditTripPageState extends State<AddEditTripPage> {
   final List<String> _statusOptions = ['Planned', 'Completed', 'Cancelled'];
 
   bool get isEditMode => widget.trip != null;
+
+  /// Generate a unique color for the route based on trip data
+  Color _getRouteColor() {
+    // Generate a consistent color based on the trip's pickup and destination
+    final String colorSeed =
+        '${_pickupLatitude ?? 0}_${_pickupLongitude ?? 0}_${_destinationLatitude ?? 0}_${_destinationLongitude ?? 0}';
+    final int hash = colorSeed.hashCode;
+
+    // Generate HSL color with good saturation and lightness for visibility
+    final double hue = (hash % 360).toDouble();
+    final Color color = HSLColor.fromAHSL(1.0, hue, 0.7, 0.5).toColor();
+
+    return color;
+  }
 
   @override
   void initState() {
@@ -208,6 +223,37 @@ class _AddEditTripPageState extends State<AddEditTripPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Route Map Preview
+                if (_pickupLatitude != null && _pickupLongitude != null ||
+                    _destinationLatitude != null &&
+                        _destinationLongitude != null) ...[
+                  const Text(
+                    'Route Preview',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.darkText,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TripRouteMapWidget(
+                    pickupLocation:
+                        _pickupLatitude != null && _pickupLongitude != null
+                        ? LatLng(_pickupLatitude!, _pickupLongitude!)
+                        : null,
+                    destinationLocation:
+                        _destinationLatitude != null &&
+                            _destinationLongitude != null
+                        ? LatLng(_destinationLatitude!, _destinationLongitude!)
+                        : null,
+                    pickupAddress: _pickupLocationController.text,
+                    destinationAddress: _destinationController.text,
+                    routeColor: _getRouteColor(),
+                    onPickupTap: _selectPickupLocation,
+                    onDestinationTap: _selectDestinationLocation,
+                  ),
+                  const SizedBox(height: 20),
+                ],
                 // Pickup Location Field
                 CustomTextField(
                   controller: _pickupLocationController,
@@ -252,7 +298,7 @@ class _AddEditTripPageState extends State<AddEditTripPage> {
                 const SizedBox(height: 16),
                 // Status Dropdown
                 DropdownButtonFormField<String>(
-                  value: _selectedStatus,
+                  initialValue: _selectedStatus,
                   decoration: InputDecoration(
                     labelText: AppStrings.status,
                     prefixIcon: const Icon(Icons.info_outline),
