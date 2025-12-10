@@ -117,6 +117,32 @@ class _LocationPickerWidgetState extends State<LocationPickerWidget> {
       });
     }
   }
+  final TextEditingController _searchController = TextEditingController();
+  Future<void> _searchLocation() async {
+    final query = _searchController.text.trim();
+    if (query.isEmpty) return;
+
+    try {
+      final locations = await locationFromAddress(query);
+
+      if (locations.isNotEmpty) {
+        final loc = locations.first;
+        final target = LatLng(loc.latitude, loc.longitude);
+
+        // حرّك الماب
+        _mapController?.animateCamera(
+          CameraUpdate.newLatLngZoom(target, 15),
+        );
+
+        // عدّل الموقع المختار
+        _onMapTap(target);
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Location not found")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +178,7 @@ class _LocationPickerWidgetState extends State<LocationPickerWidget> {
             )
           : Stack(
               children: [
+
                 GoogleMap(
                   initialCameraPosition: CameraPosition(
                     target: _selectedLocation ?? const LatLng(24.7136, 46.6753),
@@ -178,7 +205,36 @@ class _LocationPickerWidgetState extends State<LocationPickerWidget> {
                     _mapController = controller;
                   },
                 ),
-                // Address display at top
+                Positioned(
+                  top: 16,
+                  left: 16,
+                  right: 16,
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              decoration: const InputDecoration(
+                                hintText: "Search location...",
+                                border: InputBorder.none,
+                              ),
+                              onSubmitted: (_) => _searchLocation(),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.search),
+                            onPressed: _searchLocation,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 if (_selectedAddress != null)
                   Positioned(
                     top: 16,

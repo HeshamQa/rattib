@@ -101,35 +101,18 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 30),
             // SOS Button
-            const SOSButton(),
-            const SizedBox(height: 30),
             // App logo/icon
-            Center(
-              child: Container(
-                width: 100,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets/images/unnamed.png",
+                  width: 210,
+                  fit: BoxFit.contain,
                 ),
-                child: const Icon(
-                  Icons.location_on,
-                  size: 50,
-                  color: AppColors.primaryBlue,
-                ),
-              ),
+              ],
             ),
-            const SizedBox(height: 30),
-            // Action cards
             HomeActionCard(
               icon: Icons.task_alt,
               title: AppStrings.addTasks,

@@ -45,24 +45,13 @@ class _WelcomePageState extends State<WelcomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    "assets/images/head.png",
+                    "assets/images/unnamed.png",
                     width: 350,
                     fit: BoxFit.contain,
                   ),
                 ],
               ),
               const Spacer(flex: 2),
-              // App Name
-              const Text(
-                AppStrings.appName,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.white,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
               // Welcome
               const Text(
                 AppStrings.welcome,

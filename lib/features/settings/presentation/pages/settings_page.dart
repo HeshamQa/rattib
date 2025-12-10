@@ -129,6 +129,29 @@ class SettingsPage extends StatelessWidget {
             ),
             _buildSettingsTile(
               context,
+              icon: Icons.warning_amber_rounded,
+              title: "SOS Emergency",
+              iconColor: Colors.red,
+              textColor: Colors.red,
+              onTap: () {
+                Helpers.showConfirmDialog(
+                  context,
+                  title: "SOS",
+                  message: "Are you in an emergency?",
+                  confirmText: "Send SOS",
+                ).then((confirmed) {
+                  if (confirmed) {
+                    Helpers.showSnackBar(
+                      context,
+                      "SOS alert sent! (Coming soon)",
+                    );
+                  }
+                });
+              },
+            ),
+            const SizedBox(height: 24),
+            _buildSettingsTile(
+              context,
               icon: Icons.description,
               title: AppStrings.termsConditions,
               onTap: () {

@@ -121,7 +121,7 @@ class _TripsPageState extends State<TripsPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.flight_takeoff,
+                    Icons.add_road,
                     size: 80,
                     color: AppColors.grayText.withOpacity(0.5),
                   ),
@@ -148,7 +148,6 @@ class _TripsPageState extends State<TripsPage> {
             );
           }
 
-          // Group trips by status
           final plannedTrips = tripProvider.getTripsByStatus('Planned');
           final completedTrips = tripProvider.getTripsByStatus('Completed');
           final cancelledTrips = tripProvider.getTripsByStatus('Cancelled');

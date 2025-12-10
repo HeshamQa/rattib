@@ -9,7 +9,6 @@ class SOSButton extends StatelessWidget {
   const SOSButton({super.key});
 
   void _handleSOSPress(BuildContext context) {
-    // Show confirmation dialog
     Helpers.showConfirmDialog(
       context,
       title: AppStrings.sos,
@@ -18,7 +17,6 @@ class SOSButton extends StatelessWidget {
       cancelText: 'Cancel',
     ).then((confirmed) {
       if (confirmed) {
-        // TODO: Implement SOS functionality
         Helpers.showSnackBar(
           context,
           'SOS alert sent! (Feature coming soon)',
@@ -29,49 +27,43 @@ class SOSButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => _handleSOSPress(context),
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: AppColors.sosRed,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.sosRed.withOpacity(0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(25),
+    return Align(
+      alignment: Alignment.center,   // ← مش بنص
+      child: InkWell(
+        onTap: () => _handleSOSPress(context),
+        borderRadius: BorderRadius.circular(50),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: AppColors.sosRed,
+            borderRadius: BorderRadius.circular(50),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.sosRed.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 3),
               ),
-              child: const Icon(
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min, // ← زر صغير
+            children: const [
+              Icon(
                 Icons.warning_rounded,
-                color: AppColors.sosRed,
-                size: 30,
-              ),
-            ),
-            const SizedBox(width: 16),
-            const Text(
-              AppStrings.sos,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
                 color: AppColors.white,
+                size: 15,
               ),
-            ),
-          ],
+              SizedBox(width: 8),
+              Text(
+                AppStrings.sos,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.white,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
