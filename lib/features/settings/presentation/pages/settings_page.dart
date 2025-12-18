@@ -134,19 +134,7 @@ class SettingsPage extends StatelessWidget {
               iconColor: Colors.red,
               textColor: Colors.red,
               onTap: () {
-                Helpers.showConfirmDialog(
-                  context,
-                  title: "SOS",
-                  message: "Are you in an emergency?",
-                  confirmText: "Send SOS",
-                ).then((confirmed) {
-                  if (confirmed) {
-                    Helpers.showSnackBar(
-                      context,
-                      "SOS alert sent! (Coming soon)",
-                    );
-                  }
-                });
+                Navigator.pushNamed(context, AppRoutes.sos);
               },
             ),
             const SizedBox(height: 24),

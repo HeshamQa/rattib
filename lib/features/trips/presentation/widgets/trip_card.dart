@@ -80,22 +80,35 @@ class TripCard extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: Text(
-                          trip.destination,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: AppColors.darkText,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Trip #${trip.tripId}',
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.darkText,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              trip.tripDate ?? 'No date set',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.grayText,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -119,66 +132,72 @@ class TripCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   // Pickup location
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Icon(
                         Icons.my_location,
                         size: 14,
-                        color: AppColors.iconColor,
+                        color: AppColors.successGreen,
                       ),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
                           trip.pickupLocation ?? 'No pickup location',
                           style: const TextStyle(
-                            fontSize: 12,
+                            fontSize: 11,
                             color: AppColors.grayText,
                           ),
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 4),
-                  // Trip date
+                  // Destination
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Icon(
-                        Icons.calendar_today,
+                        Icons.location_on,
                         size: 14,
-                        color: AppColors.iconColor,
+                        color: AppColors.canceledStatus,
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        trip.tripDate ?? 'No date set',
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppColors.grayText,
+                      Expanded(
+                        child: Text(
+                          trip.destination,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: AppColors.grayText,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      if (trip.order != null) ...[
-                        const SizedBox(width: 12),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppColors.primaryBlue.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            'Order: ${trip.order}',
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.primaryBlue,
-                            ),
-                          ),
-                        ),
-                      ],
                     ],
                   ),
+                  if (trip.order != null) ...[
+                    const SizedBox(height: 4),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryBlue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'Order: ${trip.order}',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryBlue,
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -2,7 +2,7 @@
 /// Contains all API endpoints and configuration
 class ApiConstants {
   // Base URL
-  static const String baseUrl = 'https://softwarepiece.online/rattibapis';
+  static const String baseUrl = 'https://ratip.online/rattibapis';
 
   // API Timeouts
   static const Duration connectTimeout = Duration(seconds: 30);
@@ -44,4 +44,21 @@ class ApiConstants {
 
   // Google Maps API Key (Placeholder - to be updated by user)
   static const String googleMapsApiKey = 'YOUR_GOOGLE_MAPS_API_KEY_HERE';
+
+  // SOS Endpoints
+  static const String sosCreateEndpoint = '/api/sos/create.php';
+  static const String sosReadEndpoint   = '/api/sos/read.php';
+  static const String sosUpdateEndpoint = '/api/sos/update.php';
+  static const String sosDeleteEndpoint = '/api/sos/delete.php';
+
+  // Admin Endpoints
+  static const String adminLoginEndpoint = '/api/admin/login.php';
+  static const String adminCreateEndpoint = '/api/admin/create.php';
+  static const String adminStatsEndpoint = '/api/admin/stats.php';
+  static const String adminUsersEndpoint = '/api/admin/users.php';
+  static const String adminDeleteUserEndpoint = '/api/admin/delete_user.php';
+  static const String adminTasksEndpoint = '/api/admin/tasks.php';
+  static const String adminTripsEndpoint = '/api/admin/trips.php';
+  static const String adminInquiriesEndpoint = '/api/admin/inquiries.php';
+  static const String adminRespondInquiryEndpoint = '/api/admin/respond_inquiry.php';
 }

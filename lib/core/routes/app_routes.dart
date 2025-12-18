@@ -20,6 +20,8 @@ import 'package:rattib/features/settings/presentation/pages/terms_conditions_pag
 import 'package:rattib/features/settings/presentation/pages/about_us_page.dart';
 import 'package:rattib/features/settings/presentation/pages/contact_us_page.dart';
 import 'package:rattib/features/settings/presentation/pages/help_faqs_page.dart';
+import 'package:rattib/features/settings/presentation/pages/sos_emergency_page.dart';
+import 'package:rattib/features/admin/presentation/pages/admin_dashboard_page.dart';
 
 /// App Routes
 /// Centralized route definitions for navigation
@@ -45,7 +47,11 @@ class AppRoutes {
   static const String aboutUs = '/about-us';
   static const String contactUs = '/contact-us';
   static const String helpFaqs = '/help-faqs';
+  static const String sos = '/sos';
   static const String editProfile = '/edit-profile';
+
+  // Admin Routes
+  static const String adminDashboard = '/admin-dashboard';
 
   // Route generator
   static Route<dynamic> generateRoute(RouteSettings routeSettings) {
@@ -80,6 +86,8 @@ class AppRoutes {
         return _buildRoute(const BadgesPage());
       case settings:
         return _buildRoute(const SettingsPage());
+      case sos:
+        return _buildRoute(const SosEmergencyPage());
       case editProfile:
         return _buildRoute(const ProfileEditPage());
       case language:
@@ -94,6 +102,8 @@ class AppRoutes {
         return _buildRoute(const ContactUsPage());
       case helpFaqs:
         return _buildRoute(const HelpFaqsPage());
+      case adminDashboard:
+        return _buildRoute(const AdminDashboardPage());
       default:
         return _buildRoute(
           Scaffold(

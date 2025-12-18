@@ -30,12 +30,7 @@ class _WelcomePageState extends State<WelcomePage> {
     return Scaffold(
       body: Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/logo.jpeg"),
-            fit: BoxFit.fill,
-          ),
-        ),
+        decoration: const BoxDecoration(),
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
@@ -58,7 +53,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.white,
+                  color: AppColors.darkText,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -68,7 +63,7 @@ class _WelcomePageState extends State<WelcomePage> {
                 AppStrings.welcomeDescription,
                 style: TextStyle(
                   fontSize: 16,
-                  color: AppColors.white.withOpacity(0.9),
+                  color: AppColors.darkText.withOpacity(0.9),
                   height: 1.5,
                 ),
                 textAlign: TextAlign.center,
@@ -83,8 +78,8 @@ class _WelcomePageState extends State<WelcomePage> {
                         ? () => _handleGetStarted(context)
                         : null,
                     isLoading: !authProvider.isInitialized,
-                    color: AppColors.white,
-                    textColor: AppColors.primaryBlue,
+                    color: AppColors.primaryBlue,
+                    textColor: AppColors.white,
                   );
                 },
               ),

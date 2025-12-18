@@ -8,6 +8,8 @@ import 'package:rattib/features/address/presentation/providers/address_provider.
 import 'package:rattib/features/tasks/presentation/providers/task_provider.dart';
 import 'package:rattib/features/trips/presentation/providers/trip_provider.dart';
 import 'package:rattib/features/badges/presentation/providers/badge_provider.dart';
+import 'package:rattib/features/sos/presentation/providers/sos_provider.dart';
+import 'package:rattib/features/admin/presentation/providers/admin_provider.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +27,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => TaskProvider()),
         ChangeNotifierProvider(create: (_) => TripProvider()),
         ChangeNotifierProvider(create: (_) => BadgeProvider()),
-        // Add more providers here as features are implemented
+        ChangeNotifierProvider(create: (_) => SosProvider()),
+        ChangeNotifierProvider(create: (_) => AdminProvider()),
       ],
       child: MaterialApp(
         title: AppStrings.appName,
@@ -45,9 +48,72 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        initialRoute: AppRoutes.welcome,
+        home: const AuthWrapper(),
         onGenerateRoute: AppRoutes.generateRoute,
       ),
     );
+  }
+}
+
+/// Auth Wrapper - Handles initial routing based on auth state
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  bool _navigated = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, child) {
+        // Show loading while checking auth state
+        if (!authProvider.isInitialized) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        // Only navigate once
+        if (!_navigated) {
+          _navigated = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _handleNavigation(context, authProvider);
+          });
+        }
+
+        // Show loading while navigating
+        return const Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
+  void _handleNavigation(BuildContext context, AuthProvider authProvider) {
+    if (authProvider.isAuthenticated) {
+      if (authProvider.isAdmin) {
+        // Set admin state in AdminProvider
+        final adminProvider = context.read<AdminProvider>();
+        if (!adminProvider.isLoggedIn && authProvider.adminId != null) {
+          adminProvider.login(authProvider.adminId!);
+        }
+        // Navigate to admin dashboard
+        Navigator.pushReplacementNamed(context, AppRoutes.adminDashboard);
+      } else {
+        // Navigate to home for regular users
+        Navigator.pushReplacementNamed(context, AppRoutes.home);
+      }
+    } else {
+      // Navigate to welcome for unauthenticated users
+      Navigator.pushReplacementNamed(context, AppRoutes.welcome);
+    }
   }
 }

@@ -28,6 +28,9 @@ class AuthProvider with ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get isAuthenticated => _currentUser != null;
   bool get isInitialized => _isInitialized;
+  bool get isAdmin => _currentUser?.isAdmin ?? false;
+  int? get adminId => _currentUser?.adminId;
+  String? get role => _currentUser?.role;
 
   AuthProvider() {
     final repository = AuthRepositoryImpl();
@@ -46,9 +49,19 @@ class AuthProvider with ChangeNotifier {
       final userId = prefs.getInt('user_id');
       final name = prefs.getString('user_name');
       final email = prefs.getString('user_email');
+      final isAdmin = prefs.getBool('is_admin') ?? false;
+      final adminId = prefs.getInt('admin_id');
+      final role = prefs.getString('role');
 
       if (isAuthenticated && userId != null && name != null && email != null) {
-        _currentUser = UserEntity(userId: userId, name: name, email: email);
+        _currentUser = UserEntity(
+          userId: userId,
+          name: name,
+          email: email,
+          isAdmin: isAdmin,
+          adminId: adminId,
+          role: role,
+        );
         notifyListeners();
       }
     } catch (e) {
@@ -66,6 +79,13 @@ class AuthProvider with ChangeNotifier {
     await prefs.setString('user_name', user.name);
     await prefs.setString('user_email', user.email);
     await prefs.setBool('isAuthenticated', true);
+    await prefs.setBool('is_admin', user.isAdmin);
+    if (user.adminId != null) {
+      await prefs.setInt('admin_id', user.adminId!);
+    }
+    if (user.role != null) {
+      await prefs.setString('role', user.role!);
+    }
   }
 
   /// Clear user from local storage
@@ -75,6 +95,9 @@ class AuthProvider with ChangeNotifier {
     await prefs.remove('user_name');
     await prefs.remove('user_email');
     await prefs.remove('isAuthenticated');
+    await prefs.remove('is_admin');
+    await prefs.remove('admin_id');
+    await prefs.remove('role');
   }
 
   /// Login

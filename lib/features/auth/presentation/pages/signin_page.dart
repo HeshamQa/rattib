@@ -9,6 +9,8 @@ import 'package:rattib/core/utils/helpers.dart';
 import 'package:rattib/core/routes/app_routes.dart';
 import 'package:rattib/features/auth/presentation/providers/auth_provider.dart';
 import 'package:rattib/features/auth/presentation/widgets/social_login_buttons.dart';
+import 'package:rattib/features/admin/presentation/providers/admin_provider.dart';
+import 'package:rattib/features/admin/presentation/pages/admin_dashboard_page.dart';
 
 /// Sign In Page
 /// User login screen
@@ -45,8 +47,20 @@ class _SignInPageState extends State<SignInPage> {
 
       if (success) {
         Helpers.showSuccess(context, AppStrings.loginSuccess);
-        Navigator.pushReplacementNamed(context, AppRoutes.home);
-        
+
+        // Check if user is admin and redirect accordingly
+        if (authProvider.isAdmin) {
+          // Set admin login state in AdminProvider
+          final adminProvider = context.read<AdminProvider>();
+          adminProvider.login(authProvider.adminId!);
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const AdminDashboardPage()),
+          );
+        } else {
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
+        }
       } else {
         Helpers.showError(
           context,
